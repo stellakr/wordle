@@ -115,7 +115,9 @@ const deleteLetter = () => {
 const checkRow = () => {
   const guess = guessRows[currentRow].join('')
 
-  if (currentTile === 5) {
+  if (currentTile >  4) {
+    console.log('guess is ' + guess, 'wordle is ' + wordle)
+    flipTile()
     if(wordle === guess) {
       showMessage('Magnificent!')
       isGameOver = true
@@ -140,3 +142,48 @@ const showMessage = (message) => {
   messageDisplay.append(messageElement)
   setTimeout(() => messaageDisplay.removeChild(messageElement), 2000)
 }
+
+const addColorToKey = (keyLetter, color) => {
+  const key = document.getElementById(keyLetter)
+  key.classList.add(color)
+}
+//adds overlay of color to keyboard
+
+const flipTile = () => {
+  const rowTiles = document.querySelector('#guessRow-' + currentRow).childNodes
+  let checkWordle = wordle
+  const guess = []
+
+  rowTiles.forEach(tile => {
+    guess.push({ letter: tile.getAttribute('data'), color: 'grey-overlay'})
+  })
+  //collects all the data
+
+  guess.forEach((guess, index) => {
+    if (guess.letter == wordle[index]) {
+      guess.color = 'green-overlay'
+      checkWordle = checkWordle.replace(guess.letter, '')
+    }
+  })
+  //check if letter is a match for that box
+
+  guess.forEach(guess => {
+    if(checkWordle.includes(guess.letter)) {
+     guess.color = 'yellow-overlay'
+      checkWordle = checkWordle.replace(guess.letter, '')
+    }
+  })
+  console.log('guess', guess)
+  //check if letter is in word
+
+  rowTiles.forEach((tile, index) => {
+    const dataLetter = tile.getAttribute('data')
+
+    setTimeout(() => {
+      tile.classList.add('flip')
+      tile.classList.add('guess[index].color')
+      addColorToKey(guess[index].letter, guess[index].color)
+    }, 500 * index)
+  })
+}
+//makes tiles flip and adds overlay to letters in boxes
