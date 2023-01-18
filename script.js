@@ -4,6 +4,9 @@ const tileDisplay = document.querySelector('.tile-container')
 const keyboard = document.querySelector('.key-container')
 //selected div (key-container)
 
+const messageDisplay = document.querySelector('.message-container')
+//selected div (message-container)
+
 const wordle = 'SUPER'
 
 const keys = [
@@ -39,6 +42,7 @@ const keys = [
 
 let currentRow = 0
 let currentTile = 0
+let isGameOver = false
 
 const guessRows = [
   ['', '', '', '', ''],
@@ -71,15 +75,68 @@ keys.forEach(key => {
 })
 //button for each key (button with keys as text content)
 
-const handleClick = (key) => {
-  console.log('clicked', key)
-  addLetter(key)
+const handleClick = (letter) => {
+  console.log('clicked', letter)
+  if (letter === '«') {
+    deleteLetter ()
+    return
+  }
+  if (letter === 'ENTER') {
+    checkRow ()
+    return
+  }
+  addLetter(letter)
 }
 //when key gets clicked it goes to function addLetter
 
 const addLetter = (letter) => {
-  const tile = document.getElementById('guessRow-' + currentRow + '-tile-' + currentTile)
-  tile.textContent = letter
-  currentTile++
+  if (currentTile < 5 && currentRow < 6) {
+    const tile = document.getElementById('guessRow-' + currentRow + '-tile-' + currentTile)
+    tile.textContent = letter
+    guessRows[currentRow][currentTile] = letter
+    tile.setAttribute('data' , letter)
+    currentTile++
+    console.log('guessRows',guessRows)
+  }
 }
-//add letter to box after click
+//add letter to box after click & add letter to box
+
+const deleteLetter = () => {
+  if (currentTile > 0) {
+    currentTile--
+    const tile = document.getElementById('guessRow-' + currentRow + '-tile-' + currentTile)
+    tile.textContent = ''
+    guessRows[currentRow][currentTile] = ''
+    tile.setAttribute('data', '')
+  }
+}
+//deltes previous tile
+
+const checkRow = () => {
+  const guess = guessRows[currentRow].join('')
+
+  if (currentTile === 5) {
+    if(wordle === guess) {
+      showMessage('Magnificent!')
+      isGameOver = true
+      return
+    } else {
+      if (currentRow >= 5) {
+        isGameOver = false
+        showMessage('Game Over')
+        return
+      }
+      if (currentRow < 5) {
+        currentRow++
+        currentTile = 0
+      }
+    }
+  }
+}
+
+const showMessage = (message) => {
+  const messageElement = document.createElement('p')
+  messageElement.textContent = message
+  messageDisplay.append(messageElement)
+  setTimeout(() => messaageDisplay.removeChild(messageElement), 2000)
+}

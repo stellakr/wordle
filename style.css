@@ -49,6 +49,7 @@ body {
 .key-container button:nth-child(28) {
   width: 68px;
 }
+
 .tile-container div {
   display: flex;
 }
@@ -66,4 +67,11 @@ body {
 
 .message-container {
   height: 30px;
+}
+
+.message-container p {
+  background-color: #818384;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 0;
 }
